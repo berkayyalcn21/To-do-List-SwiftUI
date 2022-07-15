@@ -11,7 +11,6 @@ import SwiftUI
 class ViewModel: ObservableObject {
     
     @Published var items = [PostModel]()
-    let values = [PostModel]()
     
     init() {
         fetchPosts()
@@ -34,7 +33,6 @@ class ViewModel: ObservableObject {
             do {
                 
                 if let data = data {
-                    
                     let result = try JSONDecoder().decode([PostModel].self, from: data)
                     
                     DispatchQueue.main.async {
@@ -76,6 +74,8 @@ class ViewModel: ObservableObject {
                         let result = try JSONDecoder().decode(PostModel.self, from: data)
                         DispatchQueue.main.async {
                             print(result)
+                            self.items.insert(result, at: 0)
+                            print(self.items[0])
                         }
                         
                     }else {
@@ -113,6 +113,9 @@ class ViewModel: ObservableObject {
                         let result = try JSONDecoder().decode(PostModel.self, from: data)
                         DispatchQueue.main.async {
                             print(result)
+                            for (index, post) in self.items.enumerated() where post.id == idUpdate {
+                                self.items[index] = result
+                            }
                         }
                         
                     }else {
@@ -140,23 +143,15 @@ class ViewModel: ObservableObject {
         request.httpBody = data
         request.setValue("application/json", forHTTPHeaderField: "Content-Type")
         
+        
         URLSession.shared.dataTask(with: request) { data, response, error in
             if error != nil {
                 print("Error", error?.localizedDescription ?? "Error")
             }else {
-                do {
-                    if let data = data {
-                        let result = try JSONDecoder().decode(PostModel.self, from: data)
-                        DispatchQueue.main.async {
-                            print(result)
-                        }
-                        
-                    }else {
-                        print("No data")
+                if let httpResponse = response as? HTTPURLResponse {
+                    if httpResponse.statusCode == 200 {
+                        print("Success")
                     }
-                    
-                }catch let JsonError {
-                    print("Fetch json error: ", JsonError.localizedDescription)
                 }
             }
         }.resume()

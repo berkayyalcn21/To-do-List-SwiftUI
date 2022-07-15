@@ -53,7 +53,6 @@ struct NewTodosView: View {
             if content != "" {
                 let parameters: [String: Any] = ["content": content]
                 viewModel.createPost(paramaters: parameters)
-                viewModel.fetchPosts()
                 isPresented.toggle()
 
             }else {

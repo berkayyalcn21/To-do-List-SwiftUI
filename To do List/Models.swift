@@ -7,8 +7,8 @@
 
 import Foundation
 
-struct PostModel: Decodable {
-    let id: Int
+struct PostModel: Decodable, Hashable {
+    var id: Int
     let content: String
     var isCompleted: Bool
 }

@@ -13,8 +13,23 @@ struct ContentView: View {
     }
 }
 
+struct ListView: View {
+    
+    let item: PostModel
+    
+    var body: some View {
+        NavigationLink(destination: DetailView(item: item)) {
+                Title
+            }
+    }
+    
+    var Title: some View {
+        Text(item.content).font(.title2)
+    }
+}
+
 struct HomeView: View {
-    @EnvironmentObject var viewModel: ViewModel
+    @StateObject var viewModel = ViewModel()
     @State var isPresentedNewTodo = false
     @State var content = ""
     
@@ -22,11 +37,13 @@ struct HomeView: View {
         NavigationView {
             List {
                 ForEach(viewModel.items, id: \.id) { item in
-                    NavigationLink(
-                    destination: DetailView(item: item),
-                    label: {
+                    NavigationLink {
+                        DetailView(item: item)
+                            .environmentObject(viewModel)
+                    } label: {
                         Text(item.content).font(.title2)
-                    })
+                    }
+                        
 
                 }.onDelete(perform: deletePost)
             }
@@ -36,12 +53,14 @@ struct HomeView: View {
         }
         .sheet(isPresented: $isPresentedNewTodo) {
             NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
+                .environmentObject(viewModel)
         }
     }
     
     private func deletePost(indexSet: IndexSet) {
         let id = indexSet.map { viewModel.items[$0].id }
         DispatchQueue.main.async {
+            self.viewModel.items.remove(atOffsets: indexSet)
             let parameters: [String: Any] = ["id": id[0]]
             self.viewModel.deletePost(idDelete: id[0], paramaters: parameters)
             self.viewModel.fetchPosts()
