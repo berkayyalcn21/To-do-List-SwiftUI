@@ -1,4 +1,4 @@
-//
+ //
 //  ContentView.swift
 //  To do List
 //
@@ -28,7 +28,7 @@ struct HomeView: View {
                         Text(item.content).font(.title2)
                     })
 
-                }
+                }.onDelete(perform: deletePost)
             }
             .listStyle(InsetListStyle())
             .navigationBarTitle("Todos")
@@ -38,6 +38,16 @@ struct HomeView: View {
             NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
         }
     }
+    
+    private func deletePost(indexSet: IndexSet) {
+        let id = indexSet.map { viewModel.items[$0].id }
+        DispatchQueue.main.async {
+            let parameters: [String: Any] = ["id": id[0]]
+            self.viewModel.deletePost(idDelete: id[0], paramaters: parameters)
+            self.viewModel.fetchPosts()
+        }
+    }
+    
     var plusButton : some View {
         Button {
             isPresentedNewTodo.toggle()

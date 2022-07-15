@@ -6,11 +6,10 @@
 //
 
 import Foundation
-import SwiftUI
 
 struct PostModel: Decodable {
     let id: Int
     let content: String
-    var isCompleted: Bool = false
+    var isCompleted: Bool
 }
 

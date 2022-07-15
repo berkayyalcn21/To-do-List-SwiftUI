@@ -11,6 +11,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     
     @Published var items = [PostModel]()
+    let values = [PostModel]()
     
     init() {
         fetchPosts()
@@ -34,7 +35,7 @@ class ViewModel: ObservableObject {
                 
                 if let data = data {
                     
-                    let result = try  JSONDecoder().decode([PostModel].self, from: data)
+                    let result = try JSONDecoder().decode([PostModel].self, from: data)
                     
                     DispatchQueue.main.async {
                         self.items = result
@@ -72,7 +73,7 @@ class ViewModel: ObservableObject {
             }else {
                 do {
                     if let data = data {
-                        let result = try JSONDecoder().decode([PostModel].self, from: data)
+                        let result = try JSONDecoder().decode(PostModel.self, from: data)
                         DispatchQueue.main.async {
                             print(result)
                         }
@@ -90,13 +91,14 @@ class ViewModel: ObservableObject {
     
     
     // Update data
-    func updatePost(paramaters: [String: Any]) {
-        guard let url = URL(string: "http://localhost:8000/todos") else {
+    func updatePost(idUpdate: Int, paramaters: [String: Any]) {
+        guard let url = URL(string: "http://localhost:8000/todos/\(idUpdate)") else {
             print("Not found url")
             return
         }
-        
+        print(url)
         let data = try! JSONSerialization.data(withJSONObject: paramaters)
+        
         var request = URLRequest(url: url)
         request.httpMethod = "PUT"
         request.httpBody = data
@@ -108,7 +110,7 @@ class ViewModel: ObservableObject {
             }else {
                 do {
                     if let data = data {
-                        let result = try JSONDecoder().decode([PostModel].self, from: data)
+                        let result = try JSONDecoder().decode(PostModel.self, from: data)
                         DispatchQueue.main.async {
                             print(result)
                         }
@@ -126,8 +128,8 @@ class ViewModel: ObservableObject {
     
     
     // Delete data
-    func deletePost(paramaters: [String: Any]) {
-        guard let url = URL(string: "http://localhost:8000/todos") else {
+    func deletePost(idDelete: Int, paramaters: [String: Any]) {
+        guard let url = URL(string: "http://localhost:8000/todos/\(idDelete)") else {
             print("Not found url")
             return
         }
@@ -144,7 +146,7 @@ class ViewModel: ObservableObject {
             }else {
                 do {
                     if let data = data {
-                        let result = try JSONDecoder().decode([PostModel].self, from: data)
+                        let result = try JSONDecoder().decode(PostModel.self, from: data)
                         DispatchQueue.main.async {
                             print(result)
                         }

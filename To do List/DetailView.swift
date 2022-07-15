@@ -8,6 +8,7 @@
 import SwiftUI
 
 struct DetailView: View {
+    @EnvironmentObject var viewModel: ViewModel
     @Environment(\.presentationMode) var presentationMode
     let item: PostModel
     @State var content = ""
@@ -27,7 +28,7 @@ struct DetailView: View {
                 Spacer()
             }.padding()
                 .onAppear {
-                    self.content = item.content ?? ""
+                    self.content = item.content
                 }
         }
         .navigationBarTitle("Edit to do", displayMode: .inline)
@@ -36,6 +37,10 @@ struct DetailView: View {
     
     var trailing: some View {
         Button {
+            // Update data
+            let parameters: [String: Any] = ["content": content, "isCompleted": false]
+            viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
+            viewModel.fetchPosts()
             presentationMode.wrappedValue.dismiss()
         } label: {
             Text("Save")
