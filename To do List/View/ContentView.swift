@@ -1,4 +1,4 @@
- //
+//
 //  ContentView.swift
 //  To do List
 //
@@ -19,8 +19,8 @@ struct ListView: View {
     
     var body: some View {
         NavigationLink(destination: DetailView(item: item)) {
-                Title
-            }
+            Title
+        }
     }
     
     var Title: some View {
@@ -37,14 +37,40 @@ struct HomeView: View {
         NavigationView {
             List {
                 ForEach(viewModel.items, id: \.id) { item in
-                    NavigationLink {
-                        DetailView(item: item)
-                            .environmentObject(viewModel)
-                    } label: {
-                        Text(item.content).font(.title2)
-                    }
-                        
+                    HStack {
+                        Button {
+                            if item.isCompleted {
+                                let paramaters: [String: Any] = ["content": item.content, "isCompleted": false]
+                                viewModel.updatePost(idUpdate: item.id, paramaters: paramaters)
+                            }else {
+                                let paramaters: [String: Any] = ["content": item.content, "isCompleted": true]
+                                viewModel.updatePost(idUpdate: item.id, paramaters: paramaters)
+                            }
+                            
+                        } label: {
+                            if item.isCompleted{
+                                Image(systemName: "checkmark.square.fill")
+                                    .imageScale(.large)
+                                    .foregroundColor(.accentColor)
+                            }else {
+                                Image(systemName: "checkmark.square")
+                                    .imageScale(.large)
+                                    .foregroundColor(.accentColor)
+                            }
+                        }
+                        .buttonStyle(PlainButtonStyle())
+                        .frame(width: 40)
+                        .contentShape(Rectangle())
 
+                        
+                        NavigationLink {
+                            DetailView(item: item)
+                                .environmentObject(viewModel)
+                        } label: {
+                            Text(item.content).font(.title2)
+                        }
+                    }
+                    
                 }.onDelete(perform: deletePost)
             }
             .listStyle(InsetListStyle())
@@ -73,7 +99,7 @@ struct HomeView: View {
         } label: {
             Image(systemName: "plus")
         }
-
+        
     }
 }
 
