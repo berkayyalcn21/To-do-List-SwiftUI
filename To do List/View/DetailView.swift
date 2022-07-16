@@ -38,9 +38,8 @@ struct DetailView: View {
     var trailing: some View {
         Button {
             // Update data
-            let parameters: [String: Any] = ["content": content, "isCompleted": false]
+            let parameters: [String: Any] = ["content": content, "isCompleted": item.isCompleted]
             viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
-            viewModel.fetchPosts()
             presentationMode.wrappedValue.dismiss()
         } label: {
             Text("Save")

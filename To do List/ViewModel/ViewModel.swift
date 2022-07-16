@@ -96,7 +96,6 @@ class ViewModel: ObservableObject {
             print("Not found url")
             return
         }
-        print(url)
         let data = try! JSONSerialization.data(withJSONObject: paramaters)
         
         var request = URLRequest(url: url)
@@ -114,7 +113,7 @@ class ViewModel: ObservableObject {
                         DispatchQueue.main.async {
                             print(result)
                             for (index, post) in self.items.enumerated() where post.id == idUpdate {
-                                self.items[index] = result
+                                self.items[index] = result     
                             }
                         }
                         
