@@ -1,5 +1,6 @@
 # To-do-List
 
+### USER CRUD APP
 
 - Firstly you have to download backend server and you need node.js. You can download it from [Node.js](https://nodejs.org/en/download/)
 
@@ -9,7 +10,7 @@
 
 - You can use the postman application to see the data in the server file. [Postman](https://www.postman.com/downloads/)
 
-- Upload Todos-CRUD app.postman_collection.json to postman to see server file data.
+- Upload Todos CRUD app.postman_collection.json to postman to see server file data.
 -> import - folder - choose folder
 
 ![Postman](https://github.com/berkayyalcn21/To-do-List/blob/main/iOS/ScreenShots/Ekran%20Resmi%202022-07-17%2021.10.59.png)
@@ -25,3 +26,10 @@
 
 
 ![Simulator](https://github.com/berkayyalcn21/To-do-List/blob/main/iOS/ScreenShots/appScreen-1.png)
+
+
+### Tools
+
+- Swift
+- SwiftUI
+- Postman
