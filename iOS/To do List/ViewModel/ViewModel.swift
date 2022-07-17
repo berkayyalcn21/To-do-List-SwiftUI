@@ -19,120 +19,126 @@ class ViewModel: ObservableObject {
     
     // Retrieve data
     func fetchPosts() {
-        isLoding = true
-        guard let url = URL(string: "http://localhost:8000/todos") else {
-            print("Not found url")
-            return
-        }
-        
-        URLSession.shared.dataTask(with: url) { data, response, error in
-            
-            if error != nil {
-                print(error?.localizedDescription ?? "Error")
+        if isLoding == false {
+            isLoding = true
+            guard let url = URL(string: "http://localhost:8000/todos") else {
+                print("Not found url")
                 return
             }
             
-            do {
+            URLSession.shared.dataTask(with: url) { data, response, error in
                 
-                if let data = data {
-                    let result = try JSONDecoder().decode([PostModel].self, from: data)
-                    
-                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
-                        self.items = result
-                        self.isLoding = false
-                    }
-                    
-                }else {
-                    print("No data")
+                if error != nil {
+                    print(error?.localizedDescription ?? "Error")
+                    return
                 }
                 
-            }catch (let error) {
-                print(error.localizedDescription)
-            }
-        }.resume()
-        
+                do {
+                    
+                    if let data = data {
+                        let result = try JSONDecoder().decode([PostModel].self, from: data)
+                        
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
+                            self.items = result
+                            self.isLoding = false
+                        }
+                        
+                    }else {
+                        print("No data")
+                    }
+                    
+                }catch (let error) {
+                    print(error.localizedDescription)
+                }
+            }.resume()
+            
+        }
     }
         
     
     // Create new data
     func createPost(paramaters: [String: Any]) {
-        isLoding = true
-        guard let url = URL(string: "http://localhost:8000/todos") else {
-            print("Not found url")
-            return
-        }
-        
-        let data = try! JSONSerialization.data(withJSONObject: paramaters)
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        request.httpBody = data
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if error != nil {
-                print("Error", error?.localizedDescription ?? "Error")
-            }else {
-                do {
-                    if let data = data {
-                        let result = try JSONDecoder().decode(PostModel.self, from: data)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
-                            print(result)
-                            self.items.insert(result, at: 0)
-                            print(self.items[0])
-                            self.isLoding = false
+        if isLoding == false {
+            isLoding = true
+            guard let url = URL(string: "http://localhost:8000/todos") else {
+                print("Not found url")
+                return
+            }
+            
+            let data = try! JSONSerialization.data(withJSONObject: paramaters)
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "POST"
+            request.httpBody = data
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if error != nil {
+                    print("Error", error?.localizedDescription ?? "Error")
+                }else {
+                    do {
+                        if let data = data {
+                            let result = try JSONDecoder().decode(PostModel.self, from: data)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+                                print(result)
+                                self.items.insert(result, at: 0)
+                                print(self.items[0])
+                                self.isLoding = false
+                            }
+                            
+                        }else {
+                            print("No data")
                         }
                         
-                    }else {
-                        print("No data")
+                    }catch let JsonError {
+                        print("Fetch json error: ", JsonError.localizedDescription)
                     }
-                    
-                }catch let JsonError {
-                    print("Fetch json error: ", JsonError.localizedDescription)
                 }
-            }
-        }.resume()
+            }.resume()
+        }
     }
     
     
     // Update data
     func updatePost(idUpdate: Int, paramaters: [String: Any]) {
-        isLoding = true
-        guard let url = URL(string: "http://localhost:8000/todos/\(idUpdate)") else {
-            print("Not found url")
-            return
-        }
-        let data = try! JSONSerialization.data(withJSONObject: paramaters)
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "PUT"
-        request.httpBody = data
-        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if error != nil {
-                print("Error", error?.localizedDescription ?? "Error")
-            }else {
-                do {
-                    if let data = data {
-                        let result = try JSONDecoder().decode(PostModel.self, from: data)
-                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                            print(result)
-                            for (index, post) in self.items.enumerated() where post.id == idUpdate {
-                                self.items[index] = result     
+        if isLoding == false {
+            isLoding = true
+            guard let url = URL(string: "http://localhost:8000/todos/\(idUpdate)") else {
+                print("Not found url")
+                return
+            }
+            let data = try! JSONSerialization.data(withJSONObject: paramaters)
+            
+            var request = URLRequest(url: url)
+            request.httpMethod = "PUT"
+            request.httpBody = data
+            request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+            
+            URLSession.shared.dataTask(with: request) { data, response, error in
+                if error != nil {
+                    print("Error", error?.localizedDescription ?? "Error")
+                }else {
+                    do {
+                        if let data = data {
+                            let result = try JSONDecoder().decode(PostModel.self, from: data)
+                            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                print(result)
+                                for (index, post) in self.items.enumerated() where post.id == idUpdate {
+                                    self.items[index] = result
+                                }
+                                self.isLoding = false
                             }
-                            self.isLoding = false
+                            
+                        }else {
+                            print("No data")
                         }
                         
-                    }else {
-                        print("No data")
+                    }catch let JsonError {
+                        print("Fetch json error: ", JsonError.localizedDescription)
                     }
-                    
-                }catch let JsonError {
-                    print("Fetch json error: ", JsonError.localizedDescription)
                 }
-            }
-        }.resume()
+            }.resume()
+        }
     }
     
     
