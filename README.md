@@ -9,7 +9,7 @@
 
 - You can use the postman application to see the data in the server file. [Postman](https://www.postman.com/downloads/)
 
-- Upload Todos-CRUD app.postman_collection.json to postman to see server file data.
+- Upload Todos CRUD app.postman_collection.json to postman to see server file data.
 -> import - folder - choose folder
 
 ![Postman](https://github.com/berkayyalcn21/To-do-List/blob/main/iOS/ScreenShots/Ekran%20Resmi%202022-07-17%2021.10.59.png)
