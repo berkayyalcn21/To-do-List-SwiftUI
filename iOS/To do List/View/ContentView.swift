@@ -20,37 +20,25 @@ struct HomeView: View {
     @State var content = ""
     
     var body: some View {
-        ZStack {
-            NavigationView {
+        NavigationView {
+            if viewModel.items.isEmpty && viewModel.isLoding {
+                ProgressView()
+            }else {
                 List {
                     ForEach(viewModel.items, id: \.id) { item in
-                       ListRow(item: item)
-                      // scroll and delete
+                        ListRow(item: item)
+                        // scroll and delete
                     }.onDelete(perform: deletePost)
                 }
                 .listStyle(InsetListStyle())
                 .navigationBarTitle("Todos")
                 .navigationBarItems(trailing: plusButton)
-            }
-            .sheet(isPresented: $isPresentedNewTodo) {
-                NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
-                    .environmentObject(viewModel)
-            }
-            
-            // For loding screen
-            if viewModel.isLoding {
-                ZStack {
-                    Color(uiColor: .systemBackground)
-                        .ignoresSafeArea()
-                    
-                    ProgressView()
-                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
-                        .scaleEffect(2)
+                .sheet(isPresented: $isPresentedNewTodo) {
+                    NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
+                        .environmentObject(viewModel)
                 }
-            }
+            }   
         }
-        // For starting loding
-        .onAppear{ viewModel.fetchPosts() }
     }
 
     // Delete post func

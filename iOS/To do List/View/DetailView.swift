@@ -50,15 +50,25 @@ struct DetailView: View {
             if content.count >= 3 {
                 let parameters: [String: Any] = ["content": content, "isCompleted": item.isCompleted]
                 viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
-                presentationMode.wrappedValue.dismiss()
-            }else {
+            } else {
                 isAlert.toggle()
             }
         } label: {
-            Text("Save")
+            if viewModel.isLoding {
+                ProgressView()
+            } else {
+                Text("Save")
+            }
+        }
+        .disabled(viewModel.isLoding)
+        .onChange(of: viewModel.isLoding) { newValue in
+            if newValue == false {
+                presentationMode.wrappedValue.dismiss()
+            }
         }
     }
 }
+
 
 //struct DetailView_Previews: PreviewProvider {
 //    static var previews: some View {

@@ -57,16 +57,23 @@ struct NewTodosView: View {
             if content.count >= 3 {
                 let parameters: [String: Any] = ["content": content]
                 viewModel.createPost(paramaters: parameters)
-                isPresented.toggle()
-                content = ""
-
             }else {
                 isAlert.toggle()
             }
         } label: {
-            Text("Add")
+            if viewModel.isLoding {
+                ProgressView()
+            } else {
+                Text("Add")
+            }
         }
-
+        .disabled(viewModel.isLoding)
+        .onChange(of: viewModel.isLoding) { newValue in
+            if newValue == false {
+                isPresented.toggle()
+                content = ""
+            }
+        }
     }
 }
 
