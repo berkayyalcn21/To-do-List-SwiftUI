@@ -1,6 +1,6 @@
 # To-do-List
 
-## USER CRUD APP
+### USER CRUD APP
 
 - Firstly you have to download backend server and you need node.js. You can download it from [Node.js](https://nodejs.org/en/download/)
 
@@ -28,7 +28,7 @@
 ![Simulator](https://github.com/berkayyalcn21/To-do-List/blob/main/iOS/ScreenShots/appScreen-1.png)
 
 
-## Tools
+### Tools
 
 - Swift
 - SwiftUI
