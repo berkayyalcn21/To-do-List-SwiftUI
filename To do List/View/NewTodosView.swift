@@ -30,7 +30,7 @@ struct NewTodosView: View {
                 }.padding()
                     .alert(isPresented: $isAlert) {
                         let title = Text("No data")
-                        let message = Text("Please fill content")
+                        let message = Text("Please fill content and content must be greater than 3 ")
                         return Alert(title: title, message: message)
                     }
             }
@@ -50,10 +50,11 @@ struct NewTodosView: View {
     
     var trailing: some View {
         Button {
-            if content != "" {
+            if content.count >= 3 {
                 let parameters: [String: Any] = ["content": content]
                 viewModel.createPost(paramaters: parameters)
                 isPresented.toggle()
+                content = ""
 
             }else {
                 isAlert.toggle()

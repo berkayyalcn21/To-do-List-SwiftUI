@@ -11,6 +11,7 @@ import SwiftUI
 class ViewModel: ObservableObject {
     
     @Published var items = [PostModel]()
+    @Published private(set) var isLoding = false
     
     init() {
         fetchPosts()
@@ -18,6 +19,7 @@ class ViewModel: ObservableObject {
     
     // Retrieve data
     func fetchPosts() {
+        isLoding = true
         guard let url = URL(string: "http://localhost:8000/todos") else {
             print("Not found url")
             return
@@ -35,8 +37,9 @@ class ViewModel: ObservableObject {
                 if let data = data {
                     let result = try JSONDecoder().decode([PostModel].self, from: data)
                     
-                    DispatchQueue.main.async {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + 2) {
                         self.items = result
+                        self.isLoding = false
                     }
                     
                 }else {
@@ -53,6 +56,7 @@ class ViewModel: ObservableObject {
     
     // Create new data
     func createPost(paramaters: [String: Any]) {
+        isLoding = true
         guard let url = URL(string: "http://localhost:8000/todos") else {
             print("Not found url")
             return
@@ -72,10 +76,11 @@ class ViewModel: ObservableObject {
                 do {
                     if let data = data {
                         let result = try JSONDecoder().decode(PostModel.self, from: data)
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
                             print(result)
                             self.items.insert(result, at: 0)
                             print(self.items[0])
+                            self.isLoding = false
                         }
                         
                     }else {
@@ -92,6 +97,7 @@ class ViewModel: ObservableObject {
     
     // Update data
     func updatePost(idUpdate: Int, paramaters: [String: Any]) {
+        isLoding = true
         guard let url = URL(string: "http://localhost:8000/todos/\(idUpdate)") else {
             print("Not found url")
             return
@@ -110,11 +116,12 @@ class ViewModel: ObservableObject {
                 do {
                     if let data = data {
                         let result = try JSONDecoder().decode(PostModel.self, from: data)
-                        DispatchQueue.main.async {
+                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
                             print(result)
                             for (index, post) in self.items.enumerated() where post.id == idUpdate {
                                 self.items[index] = result     
                             }
+                            self.isLoding = false
                         }
                         
                     }else {

@@ -13,86 +13,83 @@ struct ContentView: View {
     }
 }
 
-struct ListView: View {
-    
-    let item: PostModel
-    
-    var body: some View {
-        NavigationLink(destination: DetailView(item: item)) {
-            Title
-        }
-    }
-    
-    var Title: some View {
-        Text(item.content).font(.title2)
-    }
-}
-
 struct HomeView: View {
     @StateObject var viewModel = ViewModel()
     @State var isPresentedNewTodo = false
     @State var content = ""
     
     var body: some View {
-        NavigationView {
-            List {
-                ForEach(viewModel.items, id: \.id) { item in
-                    HStack {
-                        Button {
-                            if item.isCompleted {
-                                let paramaters: [String: Any] = ["content": item.content, "isCompleted": false]
-                                viewModel.updatePost(idUpdate: item.id, paramaters: paramaters)
-                            }else {
-                                let paramaters: [String: Any] = ["content": item.content, "isCompleted": true]
-                                viewModel.updatePost(idUpdate: item.id, paramaters: paramaters)
+        ZStack {
+            NavigationView {
+                List {
+                    ForEach(viewModel.items, id: \.id) { item in
+                        HStack {
+                            Button {
+                                let parameters: [String: Any] = ["content": item.content, "isCompleted": !item.isCompleted]
+                                viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
+                                
+                            } label: {
+                                Image(systemName: item.isCompleted ? "checkmark.square.fill" : "checkmark.square")
+                                    .imageScale(.large)
+                                    .foregroundColor(.accentColor)
                             }
+                            .buttonStyle(PlainButtonStyle())
+                            .frame(width: 40)
+                            .contentShape(Rectangle())
                             
-                        } label: {
-                            if item.isCompleted{
-                                Image(systemName: "checkmark.square.fill")
-                                    .imageScale(.large)
-                                    .foregroundColor(.accentColor)
-                            }else {
-                                Image(systemName: "checkmark.square")
-                                    .imageScale(.large)
-                                    .foregroundColor(.accentColor)
+                            
+                            NavigationLink {
+                                DetailView(item: item)
+                                    .environmentObject(viewModel)
+                            } label: {
+                                
+                                Group {
+                                    if item.isCompleted {
+                                        Text(item.content).strikethrough().opacity(0.4)
+                                    }
+                                    else { Text(item.content) }
+                                }.font(.title2)
                             }
                         }
-                        .buttonStyle(PlainButtonStyle())
-                        .frame(width: 40)
-                        .contentShape(Rectangle())
-
-                        
-                        NavigationLink {
-                            DetailView(item: item)
-                                .environmentObject(viewModel)
-                        } label: {
-                            Text(item.content).font(.title2)
-                        }
-                    }
-                    
-                }.onDelete(perform: deletePost)
+                      // scroll and delete
+                    }.onDelete(perform: deletePost)
+                }
+                .listStyle(InsetListStyle())
+                .navigationBarTitle("Todos")
+                .navigationBarItems(trailing: plusButton)
             }
-            .listStyle(InsetListStyle())
-            .navigationBarTitle("Todos")
-            .navigationBarItems(trailing: plusButton)
+            .sheet(isPresented: $isPresentedNewTodo) {
+                NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
+                    .environmentObject(viewModel)
+            }
+            
+            // For loding screen
+            if viewModel.isLoding {
+                ZStack {
+                    Color(uiColor: .systemBackground)
+                        .ignoresSafeArea()
+                    
+                    ProgressView()
+                        .progressViewStyle(CircularProgressViewStyle(tint: .blue))
+                        .scaleEffect(2)
+                }
+            }
         }
-        .sheet(isPresented: $isPresentedNewTodo) {
-            NewTodosView(isPresented: $isPresentedNewTodo, content: $content)
-                .environmentObject(viewModel)
-        }
+        // For starting loding
+        .onAppear{ viewModel.fetchPosts() }
     }
-    
+
+    // Delete post func
     private func deletePost(indexSet: IndexSet) {
         let id = indexSet.map { viewModel.items[$0].id }
         DispatchQueue.main.async {
             self.viewModel.items.remove(atOffsets: indexSet)
             let parameters: [String: Any] = ["id": id[0]]
             self.viewModel.deletePost(idDelete: id[0], paramaters: parameters)
-            self.viewModel.fetchPosts()
         }
     }
     
+    // Create To do button
     var plusButton : some View {
         Button {
             isPresentedNewTodo.toggle()
