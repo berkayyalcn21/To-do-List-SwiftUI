@@ -28,7 +28,8 @@ struct NewTodosView: View {
                         .padding(.bottom)
                     
                     Spacer()
-                }.padding()
+                }
+                    .padding()
                     .alert(isPresented: $isAlert) {
                         let title = Text("No data")
                         let message = Text("Please fill content and content must be greater than 3 ")

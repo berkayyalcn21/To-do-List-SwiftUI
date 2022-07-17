@@ -13,6 +13,7 @@ struct DetailView: View {
     @Environment(\.presentationMode) var presentationMode
     let item: PostModel
     @State var content = ""
+    @State var isAlert = false
     
     var body: some View {
         ZStack {
@@ -27,9 +28,15 @@ struct DetailView: View {
                     .padding(.bottom)
                 
                 Spacer()
-            }.padding()
+            }
+                .padding()
                 .onAppear {
                     self.content = item.content
+                }
+                .alert(isPresented: $isAlert) {
+                    let title = Text("No data")
+                    let message = Text("Please fill content and content must be greater than 3 ")
+                    return Alert(title: title, message: message)
                 }
         }
         .navigationBarTitle("Edit to do", displayMode: .inline)
@@ -40,13 +47,16 @@ struct DetailView: View {
     var trailing: some View {
         Button {
             // Update data
-            let parameters: [String: Any] = ["content": content, "isCompleted": item.isCompleted]
-            viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
-            presentationMode.wrappedValue.dismiss()
+            if content.count >= 3 {
+                let parameters: [String: Any] = ["content": content, "isCompleted": item.isCompleted]
+                viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
+                presentationMode.wrappedValue.dismiss()
+            }else {
+                isAlert.toggle()
+            }
         } label: {
             Text("Save")
         }
-
     }
 }
 
