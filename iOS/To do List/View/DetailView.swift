@@ -23,7 +23,7 @@ struct DetailView: View {
                     .font(Font.system(size: 16, weight: .bold))
                 TextField("Content", text: $content)
                     .padding()
-                    .background(Color.white)
+                    .background(Color.primary.colorInvert())
                     .cornerRadius(6)
                     .padding(.bottom)
                 
