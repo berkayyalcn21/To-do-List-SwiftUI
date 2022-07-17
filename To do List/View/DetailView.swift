@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// To do details page view
 struct DetailView: View {
     @EnvironmentObject var viewModel: ViewModel
     @Environment(\.presentationMode) var presentationMode
@@ -35,6 +36,7 @@ struct DetailView: View {
         .navigationBarItems(trailing: trailing)
     }
     
+    // Update to do button
     var trailing: some View {
         Button {
             // Update data

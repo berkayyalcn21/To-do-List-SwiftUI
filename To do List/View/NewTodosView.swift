@@ -7,6 +7,7 @@
 
 import SwiftUI
 
+// Create to do list view
 struct NewTodosView: View {
     @EnvironmentObject var viewModel: ViewModel
     @Binding var isPresented: Bool
@@ -39,6 +40,7 @@ struct NewTodosView: View {
         }
     }
     
+    // Cancel button
     var leading: some View {
         Button {
             isPresented.toggle()
@@ -48,6 +50,7 @@ struct NewTodosView: View {
 
     }
     
+    // Create a new to do button
     var trailing: some View {
         Button {
             if content.count >= 3 {

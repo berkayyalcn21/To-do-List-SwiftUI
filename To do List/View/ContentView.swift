@@ -13,6 +13,7 @@ struct ContentView: View {
     }
 }
 
+// To do list home page view
 struct HomeView: View {
     @StateObject var viewModel = ViewModel()
     @State var isPresentedNewTodo = false
@@ -23,34 +24,7 @@ struct HomeView: View {
             NavigationView {
                 List {
                     ForEach(viewModel.items, id: \.id) { item in
-                        HStack {
-                            Button {
-                                let parameters: [String: Any] = ["content": item.content, "isCompleted": !item.isCompleted]
-                                viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
-                                
-                            } label: {
-                                Image(systemName: item.isCompleted ? "checkmark.square.fill" : "checkmark.square")
-                                    .imageScale(.large)
-                                    .foregroundColor(.accentColor)
-                            }
-                            .buttonStyle(PlainButtonStyle())
-                            .frame(width: 40)
-                            .contentShape(Rectangle())
-                            
-                            
-                            NavigationLink {
-                                DetailView(item: item)
-                                    .environmentObject(viewModel)
-                            } label: {
-                                
-                                Group {
-                                    if item.isCompleted {
-                                        Text(item.content).strikethrough().opacity(0.4)
-                                    }
-                                    else { Text(item.content) }
-                                }.font(.title2)
-                            }
-                        }
+                       ListRow(item: item)
                       // scroll and delete
                     }.onDelete(perform: deletePost)
                 }
@@ -97,6 +71,39 @@ struct HomeView: View {
             Image(systemName: "plus")
         }
         
+    }
+    
+    @ViewBuilder
+    func ListRow(item: PostModel) -> some View {
+        HStack {
+            // Check completed or not completed button
+            Button {
+                let parameters: [String: Any] = ["content": item.content, "isCompleted": !item.isCompleted]
+                viewModel.updatePost(idUpdate: item.id, paramaters: parameters)
+                
+            } label: {
+                Image(systemName: item.isCompleted ? "checkmark.square.fill" : "checkmark.square")
+                    .imageScale(.large)
+                    .foregroundColor(.accentColor)
+            }
+            .buttonStyle(PlainButtonStyle())
+            .frame(width: 40)
+            .contentShape(Rectangle())
+            
+            // Todos rows
+            NavigationLink {
+                DetailView(item: item)
+                    .environmentObject(viewModel)
+            } label: {
+                
+                Group {
+                    if item.isCompleted {
+                        Text(item.content).strikethrough().opacity(0.4)
+                    }
+                    else { Text(item.content) }
+                }.font(.title2)
+            }
+        }
     }
 }
 
